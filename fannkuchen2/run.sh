@@ -1,6 +1,6 @@
 
 PROJECT="profile.fannkuchen2"
-ARGS=10
+ARGS=9
 
 LIB_DIR="../lib"
 JAVA="java -Xmx1024m"

@@ -16,8 +16,8 @@
 
 (defn -main [a]
   (let [n (Integer/parseInt a)]
-    (println "waiting")
-;;     (read-line)
+;;     (println "waiting")
+   ;;  (read-line)
     (time
     (println 
       (str "Pfannkuchen(" n ") =") 

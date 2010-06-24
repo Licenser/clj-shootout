@@ -4,14 +4,6 @@
 
 (set! *warn-on-reflection* true)
 
-(defmacro copy-array [from to cnt]
-  `(loop [i#  ~cnt]
-     (if (zero? i#)
-       (aset ~to i# (aget ~from i#))
-       (do 
-	 (aset ~to i# (aget ~from i#))
-	 (recur (unchecked-dec-long i#))))))
-
 (defmacro swap-array [a p1 p2]
   `(let [t# (aget ~a ~p1)]
      (aset ~a ~p1 (aget ~a ~p2))
@@ -68,7 +60,7 @@
 	    (aset cnt (unchecked-dec-long r) r)
 	    (recur (unchecked-dec-long r)))))
       (let [r (next-permutation perm1 1 size cnt)
-	    _ (copy-array perm1 perm lst)
+	    _ (System/arraycopy perm1 0 perm 0 size)
 	    flips (fannkuchen-flip perm)]
 	(if (= r size)
 	  (do

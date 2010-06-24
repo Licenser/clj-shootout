@@ -1,6 +1,6 @@
 
 PROJECT=fannkuchen
-ARGS=6
+ARGS=11
 
 LIB_DIR="../lib"
 JAVA="java -Xmx1024m"

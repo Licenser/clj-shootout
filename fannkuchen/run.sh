@@ -1,4 +1,3 @@
-
 PROJECT=fannkuchen
 ARGS=11
 
@@ -12,3 +11,4 @@ JAVA="java -Xmx1024m"
 run_scala $PROJECT $ARGS
 
 run_clojure "equal" "profile.$PROJECT" $ARGS
+#run_clojure "own" "profile.$PROJECT" $ARGS

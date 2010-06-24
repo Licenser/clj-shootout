@@ -4,10 +4,18 @@
 
 (set! *warn-on-reflection* true)
 
+(defmacro aget' [a i]
+  ;`(aget ~a ~i))
+  `(. clojure.lang.RT (aget ~a ~i)))
+
+(defmacro aset' [a i v]
+  ;`(aset ~a ~i ~v))
+  `(. clojure.lang.RT (aset ~a (long ~i) ~v)))
+
 (defmacro swap-array [a p1 p2]
-  `(let [t# (aget ~a ~p1)]
-     (aset ~a ~p1 (aget ~a ~p2))
-     (aset ~a ~p2 t#)
+  `(let [t# (aget' ~a ~p1)]
+     (aset' ~a ~p1 (aget' ~a ~p2))
+     (aset' ~a ~p2 t#)
      ~a))
 
 (defmacro reverse-first-n [a n]
@@ -21,7 +29,7 @@
 
 (defmacro fannkuchen-flip [m]
   `(loop [m# ~m c# 0]
-     (let [f# (aget m# (long 0))]
+     (let [f# (aget' m# (long 0))]
        (if (zero? f#)
 	 c#
 	 (recur (reverse-first-n m# f#) (unchecked-inc-long c#))))))
@@ -30,24 +38,24 @@
   `(loop [r# ~r]
      (if (= r# ~size)
        r#
-       (let [p0# (aget ~perm 0)
-	     ncnt# (unchecked-dec-long (aget ~cnt r#))]
+       (let [p0# (aget' ~perm 0)
+	     ncnt# (unchecked-dec-long (aget' ~cnt r#))]
 	 (loop [i# 0]
 	   (if (< i# r#)
 	     (do
-	       (aset ~perm i# (aget ~perm (unchecked-inc-long i#)))
+	       (aset' ~perm i# (aget' ~perm (unchecked-inc-long i#)))
 	       (recur (unchecked-inc-long i#)))))
-	 (aset ~perm r# p0#)
-	 (aset ~cnt r# ncnt#)
+	 (aset' ~perm r# p0#)
+	 (aset' ~cnt r# ncnt#)
 	 (if (zero? ncnt#)
 	   (recur (unchecked-inc-long r#))
 	   r#)))))
 
 
-(defmacro max' [x y]
+(defmacro max* [x y]
   `(if (> ~x ~y) ~x ~y))
 
-(defn fannkuchen' [size]
+(defn fannkuchen* [size]
   (let [size (long size)
 	perm1 (long-array (range size))
 	perm (long-array size)
@@ -57,7 +65,7 @@
       (loop [r r]
 	(if-not (= r 1)
 	  (do
-	    (aset cnt (unchecked-dec-long r) r)
+	    (aset' cnt (unchecked-dec-long r) r)
 	    (recur (unchecked-dec-long r)))))
       (let [r (next-permutation perm1 1 size cnt)
 	    _ (System/arraycopy perm1 0 perm 0 size)
@@ -65,10 +73,10 @@
 	(if (= r size)
 	  (do
 	    (println (or (and (zero? (bit-and nperms 1)) (unchecked-subtract-long checksum flips)) (unchecked-add-long checksum flips)))
-	    (max' flips max-flips))
-	  (recur (long r) (long (max' flips max-flips)) (unchecked-inc-long nperms) (long (or (and (zero? (bit-and nperms 1)) (unchecked-subtract-long checksum flips)) (unchecked-add-long checksum flips)))))))))
+	    (max* flips max-flips))
+	  (recur (long r) (long (max* flips max-flips)) (unchecked-inc-long nperms) (long (or (and (zero? (bit-and nperms 1)) (unchecked-subtract-long checksum flips)) (unchecked-add-long checksum flips)))))))))
 
-#_(defn permutations' [size]
+#_(defn permutations* [size]
   (let [size (long size)
 	perm1 (long-array (range size))
         cnt (long-array size)
@@ -77,7 +85,7 @@
       (loop [r (long r)]
 	(if-not (= r 1)
 	  (do
-	    (aset cnt (unchecked-dec-long r) r)
+	    (aset' cnt (unchecked-dec-long r) r)
 	    (recur (unchecked-dec-long r)))))
       (let [r (next-permutation perm1 1 size cnt)]
 	(if (= r size)
@@ -87,6 +95,7 @@
 
 (defn -main [a]
   (let [n (Integer/parseInt a)]
+;    (read-line)
     (println 
      (str "Pfannkuchen(" n ") =") 
-     (fannkuchen' n))))
+     (fannkuchen* n))))

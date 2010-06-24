@@ -1,6 +1,6 @@
 
 PROJECT=fannkuchen
-ARGS=5
+ARGS=6
 
 LIB_DIR="../lib"
 JAVA="java -Xmx1024m"
@@ -11,4 +11,4 @@ JAVA="java -Xmx1024m"
 
 run_scala $PROJECT $ARGS
 
-run_clojure "equal" $PROJECT $ARGS
+run_clojure "equal" "profile.$PROJECT" $ARGS
